@@ -35,7 +35,7 @@ int main(int argc, char * argv[]){
 		}
 	}
 	FILE * tmp = fopen(tmp_filename,"w");
-	char * args[5];
+	char * args[6];
 	
 	args[0]="cc";
 	if(found=='0'){
@@ -48,12 +48,14 @@ int main(int argc, char * argv[]){
 	fclose(tmp);
 	if (argc==2){
 		args[1]=tmp_filename;
-		args[2]=NULL;
+		args[2]="-O3";
+		args[3]=NULL;
 	} else{
 		args[1]="-o";
 		args[2]=argv[2];
 		args[3]=tmp_filename;
-		args[4]=NULL;
+		args[4]="-O3";
+		args[5]=NULL;
 	}
 	
 	execvp("cc",args);

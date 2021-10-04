@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <ctype.h>
 void syntax_error(){
 	fprintf(stderr,"Syntax Error!\n");
 	exit(1);
@@ -14,27 +15,29 @@ int main(int argc, char * argv[]){
 		printf("Usage: truthlang infile [outfile]\n");
 		return 0;
 	}
-	char src_code[65536];
+	char src_code[1024];
 	FILE * src_file=fopen(argv[1],"r");
-	int size=fread (src_code, sizeof(char), 65536, src_file);
 	char found='\0';
-	for (int i=0;i<size;i++){
-		char c=src_code[i];
-		
-		if (c=='\0' || c=='\n' || c==' ' || c=='\t'){
-			continue;
-		}
-		if (c=='0' || c=='1'){
-			if (found){
-				syntax_error();
-			} else {
-				found=c;
+	while(!feof(src_file)){
+		int size=fread (src_code, sizeof(char), 1024, src_file);
+		for (int i=0;i<size;i++){
+			char c=src_code[i];
+			
+			if (isspace(c)){
+				continue;
 			}
-		} else {
-			syntax_error();
+			if (c=='0' || c=='1'){
+				if (found){
+					syntax_error();
+				} else {
+					found=c;
+				}
+			} else {
+				syntax_error();
+			}
 		}
 	}
-	if (found!='0' && found!='1'){
+	if (!found){
 			syntax_error();
 	}
 

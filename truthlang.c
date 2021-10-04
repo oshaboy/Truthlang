@@ -59,8 +59,8 @@ int main(int argc, char * argv[]){
 			args[4]=argv[2];
 			args[5]="-";
 			args[6]=NULL;
-			execvp("cc",args);
 		}
+		execvp("cc",args);
 	} else {
 		close(ends[0]);
 		if(found=='0'){

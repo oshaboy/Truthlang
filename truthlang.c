@@ -15,32 +15,35 @@ int main(int argc, char * argv[]){
 		printf("Usage: truthlang infile [outfile]\n");
 		return 0;
 	}
-	char src_code[1024];
-	FILE * src_file=fopen(argv[1],"r");
 	char found='\0';
-	while(!feof(src_file)){
-		int size=fread (src_code, sizeof(char), 1024, src_file);
-		for (int i=0;i<size;i++){
-			char c=src_code[i];
-			
-			if (isspace(c)){
-				continue;
-			}
-			if (c=='0' || c=='1'){
-				if (found){
-					syntax_error();
-				} else {
-					found=c;
+	{
+		char src_code[1024];
+		FILE * src_file=fopen(argv[1],"r");
+		while(!feof(src_file)){
+			int size=fread (src_code, sizeof(char), 1024, src_file);
+			for (int i=0;i<size;i++){
+				char c=src_code[i];
+				
+				if (isspace(c)){
+					continue;
 				}
-			} else {
-				syntax_error();
+				if (c=='0' || c=='1'){
+					if (found){
+						syntax_error();
+					} else {
+						found=c;
+					}
+				} else {
+					syntax_error();
+				}
 			}
 		}
+		fclose(src_file);
 	}
 	if (!found){
 			syntax_error();
 	}
-
+	
 	int ends[2];
 	pipe(ends);
 	int id=fork();
